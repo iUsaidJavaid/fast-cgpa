@@ -176,6 +176,17 @@ function SubjectPanel({ subject, program, onChange, onDelete }) {
     onChange({ ...subject, components: comps });
   };
 
+  const addComp = () => {
+    const newId = `c_${Date.now()}`;
+    const newComponent = { id: newId, name: "New Component", total: 10, obtained: "", weightage: 0 };
+    onChange({ ...subject, components: [...subject.components, newComponent] });
+  };
+
+  const deleteComp = (idx) => {
+    const comps = subject.components.filter((_, i) => i !== idx);
+    onChange({ ...subject, components: comps });
+  };
+
   const updateRel = (field, val) => {
     onChange({ ...subject, relStats: { ...subject.relStats, [field]: val } });
   };
@@ -315,6 +326,7 @@ function SubjectPanel({ subject, program, onChange, onDelete }) {
                 <th className="text-center px-3 py-3 font-semibold w-24">Obtained</th>
                 <th className="text-center px-3 py-3 font-semibold w-20">Weight %</th>
                 <th className="text-center px-3 py-3 font-semibold w-16">Score</th>
+                <th className="text-center px-3 py-3 font-semibold w-10"></th>
               </tr>
             </thead>
             <tbody>
@@ -324,7 +336,11 @@ function SubjectPanel({ subject, program, onChange, onDelete }) {
                   : null;
                 return (
                   <tr key={comp.id} className="border-t border-gray-50 hover:bg-indigo-50/30 transition-colors">
-                    <td className="px-4 py-2.5 font-medium text-gray-700">{comp.name}</td>
+                    <td className="px-4 py-2.5 font-medium text-gray-700">
+                      <input type="text" value={comp.name}
+                        onChange={e => updateComp(idx, "name", e.target.value)}
+                        className="w-full bg-transparent border-b border-transparent hover:border-gray-200 focus:border-indigo-400 focus:outline-none transition-colors text-gray-700 font-medium" />
+                    </td>
                     <td className="px-3 py-2.5">
                       <input type="number" value={comp.total}
                         onChange={e => updateComp(idx, "total", e.target.value)}
@@ -350,11 +366,21 @@ function SubjectPanel({ subject, program, onChange, onDelete }) {
                         }`}>{scored}%</span>
                       ) : <span className="text-gray-300 text-xs">—</span>}
                     </td>
+                    <td className="px-3 py-2.5 text-center">
+                      <button onClick={() => deleteComp(idx)} className="text-gray-300 hover:text-red-400 transition-colors p-1 rounded hover:bg-red-50">
+                        <Icon path={Icons.trash} size={14} />
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          <div className="p-3 border-t border-gray-100 bg-white flex justify-center">
+            <button onClick={addComp} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 transition-colors px-3 py-1.5 rounded-lg hover:bg-indigo-50">
+              <Icon path={Icons.plus} size={14} /> Add Component
+            </button>
+          </div>
         </div>
 
         {/* Target predictor */}
